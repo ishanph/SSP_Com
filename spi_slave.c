@@ -47,26 +47,25 @@ main (void)
   PORTF_DIRSET = 0xFF;
   cli ();
   sei ();           // global interrupts
+  SPI_Init ();
 
 //SPIC.DATA = rx; //transmit
 
+  while (!(SPIC_STATUS & 0x80));    //wait till reception is complete
+      rx = SPIC_DATA;
+  
   while (1)
     {
-      SPI_Init ();
 //_delay_ms(1000);
-      PORTF_OUTSET = 0x08;
-      PORTF_OUTSET = 0x01;  //LED at PF0 will glow
-
 // grab received byte
-      while (!(SPIC_STATUS & 0x80));    //wait till reception is complete
-      rx = SPIC_DATA;
       //_delay_ms (500);
       //PORTF_OUTCLR = 0x01;
       //_delay_ms (500);
-      if (rx == 4)
-    PORTF_OUTSET = 0x80;
+      //if (rx == 4)
+   // PORTF_OUTSET = 0x80;
 //_delay_ms(1000);
 //PORTF_OUTCLR=0x01;
+    SPI_Trans(rx);
     }
 }
 
@@ -78,7 +77,7 @@ ISR (SPIC_INT_vect)
   //SPIC.DATA = rx;     // send back
 //rx = SPI_Rec();
   //_delay_ms (1000);
-  PORTF_OUTSET = 1 << (rx);
+  PORTF_OUT |= 1 << (rx);
   //_delay_ms (1000);
   //PORTF_OUTCLR = 1 << (rx);
 }
