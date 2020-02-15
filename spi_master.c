@@ -22,21 +22,21 @@ SPI_Trans (uint8_t dat)
   while (!(SPID_STATUS & 0x80)) // wait for transmit complete
     {
       PORTF_OUTSET = 0x02;  //LED at PF1 will glow
-      _delay_ms (500);
+ //     _delay_ms (500);
     }
-  PORTF_OUTCLR = 0x02;
-  _delay_ms (500);
+//  PORTF_OUTCLR = 0x02;
+//  _delay_ms (500);
 }
 
 uint8_t
 SPI_Rec ()
 {
   PORTF_OUTSET = 0x01;      //LED at PF1 will glow
-  _delay_ms (500);
+//  _delay_ms (500);
   uint8_t dat = SPID_DATA;  // grab received byte
   while (!(SPID_STATUS & 0x80));    //wait till reception is complete
-  PORTF_OUTCLR = 0x01;
-  _delay_ms (500);
+//  PORTF_OUTCLR = 0x01;
+ // _delay_ms (500);
   return dat;
 }
 
@@ -51,19 +51,20 @@ main (void)
 
 //tx = SPID.DATA; //recieve
 
-  while (1)
+ // while (1)
     {
       SPI_Trans (tx);
-      _delay_ms (10000);
+  //    _delay_ms (10000);
     }
 }
 
 ISR (SPID_INT_vect)
 {
-//tx = SPID.DATA; //store recieved
+  SPI_Rec(tx);
+  SPI_Trans(tx+1); //store recieved
 //SPID.DATA = tx + 1; //increment and send back
-  _delay_ms (1500);
+  //_delay_ms (1500);
   PORTF_OUT = 0 b10000000;
-  _delay_ms (1500);
+  //_delay_ms (1500);
   PORTF_OUT = 0x00;
 }
