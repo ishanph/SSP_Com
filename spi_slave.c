@@ -22,22 +22,22 @@ SPI_Trans (uint8_t dat)
   while (!(SPIC_STATUS & 0x80)) // wait for transmit complete
     {
       PORTF_OUTSET = 0x02;  //LED at PF1 will glow
-      _delay_ms (500);
+      //_delay_ms (500);
     }
-  PORTF_OUTCLR = 0x02;
-  _delay_ms (500);
+  //PORTF_OUTCLR = 0x02;
+  //_delay_ms (500);
 }
 
 uint8_t
 SPI_Rec ()
 {
   PORTF_OUTSET = 0x01;      //LED at PF0 will glow
-  _delay_ms (500);
+  //_delay_ms (500);
 // grab received byte
   while (!(SPIC_STATUS & 0x80));    //wait till reception is complete
   uint8_t dat = SPIC_DATA;
-  PORTF_OUTCLR = 0x01;
-  _delay_ms (500);
+  //PORTF_OUTCLR = 0x01;
+  //_delay_ms (500);
   return dat;
 }
 
@@ -60,9 +60,9 @@ main (void)
 // grab received byte
       while (!(SPIC_STATUS & 0x80));    //wait till reception is complete
       rx = SPIC_DATA;
-      _delay_ms (500);
-      PORTF_OUTCLR = 0x01;
-      _delay_ms (500);
+      //_delay_ms (500);
+      //PORTF_OUTCLR = 0x01;
+      //_delay_ms (500);
       if (rx == 4)
     PORTF_OUTSET = 0x80;
 //_delay_ms(1000);
@@ -72,11 +72,13 @@ main (void)
 
 ISR (SPIC_INT_vect)
 {
-//rx = SPIC.DATA;     // store received
-//SPIC.DATA = rx;     // send back
+  rx = SPI_Rec ();
+  SPI_Trans (rx);
+  //rx = SPIC.DATA;     // store received
+  //SPIC.DATA = rx;     // send back
 //rx = SPI_Rec();
-  _delay_ms (1000);
+  //_delay_ms (1000);
   PORTF_OUTSET = 1 << (rx);
-  _delay_ms (1000);
-  PORTF_OUTCLR = 1 << (rx);
+  //_delay_ms (1000);
+  //PORTF_OUTCLR = 1 << (rx);
 }
